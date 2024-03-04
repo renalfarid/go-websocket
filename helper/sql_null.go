@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"reflect"
 	"time"
-
-	"github.com/go-sql-driver/mysql"
 )
 
 // CUSTOM NULL Handling structures
@@ -92,11 +90,11 @@ func (ns *NullString) Scan(value interface{}) error {
 }
 
 // NullTime is an alias for mysql.NullTime data type
-type NullTime mysql.NullTime
+type NullTime sql.NullTime
 
 // Scan implements the Scanner interface for NullTime
 func (nt *NullTime) Scan(value interface{}) error {
-	var t mysql.NullTime
+	var t sql.NullTime
 	if err := t.Scan(value); err != nil {
 		return err
 	}
