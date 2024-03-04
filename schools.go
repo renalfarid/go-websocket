@@ -13,6 +13,7 @@ import (
 type schoolsResource struct{}
 
 type School struct {
+	Id               int64              `json:"id"`
 	NamaSekolah      string             `json:"nama_sekolah"`
 	NPSN             int64              `json:"npsn"`
 	Alamat           string             `json:"alamat"`
@@ -37,7 +38,7 @@ func (rs schoolsResource) Routes() chi.Router {
 }
 
 func (rs schoolsResource) Schools(w http.ResponseWriter, r *http.Request) {
-	rows, err := database.DB.Query("SELECT * FROM sekolah")
+	rows, err := database.DB.Query("SELECT * FROM sekolah ORDER BY id")
 	if err != nil {
 		http.Error(w, "Error executing query", http.StatusInternalServerError)
 		return
@@ -49,7 +50,7 @@ func (rs schoolsResource) Schools(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var school School
 
-		if err := rows.Scan(&school.NamaSekolah, &school.NPSN, &school.Alamat,
+		if err := rows.Scan(&school.Id, &school.NamaSekolah, &school.NPSN, &school.Alamat,
 			&school.BentukPendidikan, &school.StatusSekolah, &school.Desa, &school.Kecamatan,
 			&school.KabKota, &school.Propinsi, &school.Kodepos, &school.Lintang, &school.Bujur); err != nil {
 			fmt.Println("error schools query:", err)

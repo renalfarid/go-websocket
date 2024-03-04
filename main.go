@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/joho/godotenv"
+	"golang.org/x/net/websocket"
 )
 
 func main() {
@@ -29,9 +30,13 @@ func main() {
 		w.Write([]byte("welcome to api"))
 	})
 
+	server := newServer()
+
 	//r.Mount("/users", usersResource{}.Routes())
 	r.Mount("/users", usersResource{}.Routes())
 	r.Mount("/schools", schoolsResource{}.Routes())
+	http.Handle("/schools", websocket.Handler(server.handleScools))
+	http.ListenAndServe(":3030", nil)
 
 	http.ListenAndServe(":3000", r)
 
