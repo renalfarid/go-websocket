@@ -16,6 +16,7 @@ type Server struct {
 }
 
 type SchoolRealtime struct {
+	ID          int64             `json:"id"`
 	NamaSekolah helper.NullString `json:"nama_sekolah"`
 	NPSN        helper.NullInt64  `json:"npsn"`
 	Alamat      helper.NullString `json:"alamat"`
@@ -32,7 +33,7 @@ func (s *Server) handleScools(ws *websocket.Conn) {
 	defer ws.Close()
 
 	for {
-		rows, err := database.DB.Query("SELECT nama_sekolah, npsn, alamat FROM sekolah ORDER BY id DESC")
+		rows, err := database.DB.Query("SELECT id, nama_sekolah, npsn, alamat FROM sekolah ORDER BY id DESC LIMIT 10")
 		if err != nil {
 			log.Println("Error executing query:", err)
 			return
@@ -44,7 +45,7 @@ func (s *Server) handleScools(ws *websocket.Conn) {
 		for rows.Next() {
 			var school SchoolRealtime
 
-			if err := rows.Scan(&school.NamaSekolah, &school.NPSN, &school.Alamat); err != nil {
+			if err := rows.Scan(&school.ID, &school.NamaSekolah, &school.NPSN, &school.Alamat); err != nil {
 				log.Println("Error scanning row:", err)
 				return
 			}

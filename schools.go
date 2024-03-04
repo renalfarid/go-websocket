@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"rest-api/database"
 	"rest-api/helper"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -32,7 +33,8 @@ func (rs schoolsResource) Routes() chi.Router {
 	r := chi.NewRouter()
 	// r.Use() // some middleware..
 
-	r.Get("/", rs.Schools) // GET /users - read a list of users
+	r.Get("/", rs.Schools)
+	r.Delete("/{id}", rs.DeleteSchool)
 
 	return r
 }
@@ -75,4 +77,37 @@ func (rs schoolsResource) Schools(w http.ResponseWriter, r *http.Request) {
 	// Write the JSON response.
 	w.Write(responseJSON)
 
+}
+
+func (rs schoolsResource) DeleteSchool(w http.ResponseWriter, r *http.Request) {
+	// Extract school ID from URL parameters
+	schoolIDStr := chi.URLParam(r, "id")
+	schoolID, err := strconv.Atoi(schoolIDStr)
+	if err != nil {
+		http.Error(w, "Invalid school ID", http.StatusBadRequest)
+		return
+	}
+
+	// Perform deletion operation in the database
+	err = deleteSchoolByID(schoolID)
+	if err != nil {
+		http.Error(w, "Error deleting school", http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte("School deleted successfully"))
+}
+
+func deleteSchoolByID(schoolID int) error {
+	// Implement the logic to delete the school by its ID in the database
+	// You should replace this with your actual database deletion logic
+
+	// Example: Delete school from a hypothetical 'schools' table
+	_, err := database.DB.Exec("DELETE FROM sekolah WHERE id = ?", schoolID)
+	if err != nil {
+		fmt.Println("Error deleting school:", err)
+		return err
+	}
+
+	return nil
 }
