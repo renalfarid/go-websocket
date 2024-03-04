@@ -8,12 +8,8 @@ import (
 	"time"
 )
 
-// CUSTOM NULL Handling structures
-
-// NullInt64 is an alias for sql.NullInt64 data type
 type NullInt64 sql.NullInt64
 
-// Scan implements the Scanner interface for NullInt64
 func (ni *NullInt64) Scan(value interface{}) error {
 	var i sql.NullInt64
 	if err := i.Scan(value); err != nil {

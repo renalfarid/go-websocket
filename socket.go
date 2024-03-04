@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"rest-api/database"
+	"rest-api/helper"
 	"time"
 
 	"golang.org/x/net/websocket"
@@ -15,9 +16,9 @@ type Server struct {
 }
 
 type SchoolRealtime struct {
-	NamaSekolah string `json:"nama_sekolah"`
-	NPSN        int64  `json:"npsn"`
-	Alamat      string `json:"alamat"`
+	NamaSekolah helper.NullString `json:"nama_sekolah"`
+	NPSN        helper.NullInt64  `json:"npsn"`
+	Alamat      helper.NullString `json:"alamat"`
 }
 
 func newServer() *Server {
@@ -31,7 +32,7 @@ func (s *Server) handleScools(ws *websocket.Conn) {
 	defer ws.Close()
 
 	for {
-		rows, err := database.DB.Query("SELECT nama_sekolah, npsn, alamat FROM sekolah")
+		rows, err := database.DB.Query("SELECT nama_sekolah, npsn, alamat FROM sekolah ORDER BY id DESC")
 		if err != nil {
 			log.Println("Error executing query:", err)
 			return

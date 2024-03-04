@@ -27,4 +27,5 @@ func DatabaseConnection() {
 		fmt.Println("Error connecting to the database:", err)
 		return
 	}
+	fmt.Println("connected to database.")
 }

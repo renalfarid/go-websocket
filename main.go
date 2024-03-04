@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"rest-api/database"
@@ -30,14 +31,25 @@ func main() {
 		w.Write([]byte("welcome to api"))
 	})
 
-	server := newServer()
-
 	//r.Mount("/users", usersResource{}.Routes())
 	r.Mount("/users", usersResource{}.Routes())
 	r.Mount("/schools", schoolsResource{}.Routes())
-	http.Handle("/schools", websocket.Handler(server.handleScools))
-	http.ListenAndServe(":3030", nil)
 
-	http.ListenAndServe(":3000", r)
+	// Start API server in a Goroutine
+	go func() {
+		fmt.Println("API server listening on :3000")
+		if err := http.ListenAndServe(":3000", r); err != nil {
+			log.Fatalf("API server error: %s", err)
+		}
+	}()
+
+	// Start WebSocket server
+	server := newServer()
+	http.Handle("/schools", websocket.Handler(server.handleScools))
+
+	fmt.Println("WebSocket server listening on :3030")
+	if err := http.ListenAndServe(":3030", nil); err != nil {
+		log.Fatalf("WebSocket server error: %s", err)
+	}
 
 }
