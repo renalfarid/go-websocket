@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
 
-	database.DatabaseConnection()
+	database.ConnectionInit()
 
 	r := chi.NewRouter()
 	r.Use(cors.Handler(cors.Options{

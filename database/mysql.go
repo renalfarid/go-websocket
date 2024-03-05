@@ -10,7 +10,7 @@ import (
 
 var DB *sql.DB
 
-func DatabaseConnection() {
+func ConnectionInit() {
 	// Load environment variables
 	dbUser := os.Getenv("DB_USER")
 	dbPassword := os.Getenv("DB_PASSWORD")
