@@ -42,6 +42,7 @@ func (rs schoolsResource) Routes() chi.Router {
 func (rs schoolsResource) Schools(w http.ResponseWriter, r *http.Request) {
 	rows, err := database.DB.Query("SELECT * FROM sekolah ORDER BY id")
 	if err != nil {
+		fmt.Println("error query:", err)
 		http.Error(w, "Error executing query", http.StatusInternalServerError)
 		return
 	}
